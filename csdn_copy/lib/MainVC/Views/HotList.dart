@@ -1,3 +1,4 @@
+import 'package:csdn_copy/MainVC/HotListDetailScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -98,7 +99,13 @@ class _HotListViewState extends State<HotListView>
     return GestureDetector(
       onTap: (){
         print(model['title']);
-        
+        Navigator.of(context,rootNavigator: true).push(
+          CupertinoPageRoute(
+            builder:(context){
+              return HotListDetailScreen(title: model['title'],detail: model['detail'],);
+            }
+            ),
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,5 @@
 import 'package:csdn_copy/MainVC/Views/AttentionView.dart';
 import 'package:csdn_copy/MainVC/Views/HotList.dart';
-import 'package:csdn_copy/MainVC/Views/RecommendView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -38,12 +37,11 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     views = [
       AttentionView(),
-      RecommendView(),
       HotListView(),
     ];
 
     _tabController = TabController(
-      length: 3,
+      length: views.length,
       vsync: this,
     );
 
@@ -117,25 +115,13 @@ class _MainScreenState extends State<MainScreen>
                       minSize: 35,
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Text(
-                        '推荐',
+                        '热榜',
                         style: _currentIndex == 1
                             ? selectedStyle
                             : deSelectedStyle,
                       ),
                       onPressed: () {
                         switchTypeView(1);
-                      }),
-                  CupertinoButton(
-                      minSize: 35,
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Text(
-                        '热榜',
-                        style: _currentIndex == 2
-                            ? selectedStyle
-                            : deSelectedStyle,
-                      ),
-                      onPressed: () {
-                        switchTypeView(2);
                       }),
                 ],
               ),
