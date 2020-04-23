@@ -6,7 +6,7 @@ class AttentionView extends StatefulWidget {
   _AttentionViewState createState() => _AttentionViewState();
 }
 
-class _AttentionViewState extends State<AttentionView> {
+class _AttentionViewState extends State<AttentionView> with AutomaticKeepAliveClientMixin {
   var _dataArray = [
     {
       'image': 'lib/assets/1.jpeg',
@@ -133,14 +133,19 @@ class _AttentionViewState extends State<AttentionView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GridView.count(
       primary: false,
       padding: const EdgeInsets.all(8),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       crossAxisCount: 3,
-      childAspectRatio: 0.67,
+      childAspectRatio: 0.59,
       children: getItems(context),
     );
   }
+
+
+  @override
+  bool get wantKeepAlive => true;
 }

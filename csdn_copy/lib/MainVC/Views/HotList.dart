@@ -98,8 +98,8 @@ class _HotListViewState extends State<HotListView>
     var model = dataArray[index];
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
-        print(model['title']);
         Navigator.of(context, rootNavigator: true).push(
           CupertinoPageRoute(builder: (context) {
             return HotListDetailScreen(
