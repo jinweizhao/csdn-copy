@@ -1,6 +1,7 @@
 import 'package:csdn_copy/MainVC/HotListDetailScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HotListView extends StatefulWidget {
   @override
@@ -97,14 +98,15 @@ class _HotListViewState extends State<HotListView>
     var model = dataArray[index];
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         print(model['title']);
-        Navigator.of(context,rootNavigator: true).push(
-          CupertinoPageRoute(
-            builder:(context){
-              return HotListDetailScreen(title: model['title'],detail: model['detail'],);
-            }
-            ),
+        Navigator.of(context, rootNavigator: true).push(
+          CupertinoPageRoute(builder: (context) {
+            return HotListDetailScreen(
+              title: model['title'],
+              detail: model['detail'],
+            );
+          }),
         );
       },
       child: Column(
@@ -163,20 +165,31 @@ class _HotListViewState extends State<HotListView>
     );
   }
 
-  @override
-  void dispose() {
-    print('attentionview  销毁了');
-    super.dispose();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {
+      dataArray.insert(0, dataArray[3]);
+    });
+    _refreshController.refreshCompleted();
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  void _onLoading() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {
+      dataArray.add(dataArray[dataArray.length - 3]);
+    });
+    _refreshController.loadComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      // color: Colors.red,
+    return SmartRefresher(
       child: ListView.builder(
         itemBuilder: (context, index) {
           return getCell(context, index);
@@ -187,6 +200,41 @@ class _HotListViewState extends State<HotListView>
           keepScrollOffset: true,
         ),
       ),
+      header: WaterDropHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text("上拉加载");
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text("加载失败");
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text("释放加载更多");
+          } else {
+            body = Text("没有更多数据");
+          }
+          return Container(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      enablePullUp: true,
+      onRefresh: _onRefresh,
+      onLoading: _onLoading,
     );
   }
+
+  @override
+  void dispose() {
+    print('attentionview  销毁了');
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
 }
